@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS "users";
+
+DROP TABLE IF EXISTS "book";
+
+DROP TABLE IF EXISTS "order";
+
+DROP TABLE IF EXISTS "order_detail";
