@@ -1,6 +1,17 @@
 start:
 	docker-compose up
 
+q2c:
+	sqlc generate
+
+test:
+	go test -v -covermode=atomic -race -coverpkg=./... ./... \
+	-coverprofile coverage.out.tmp && cat coverage.out.tmp | grep -v "_mock.go" | grep -v "injector.go" | grep -v "_gen.go" > coverage.out && rm coverage.out.tmp && \
+	go tool cover -func coverage.out
+	
+generateInjector:
+	wire ./...
+
 migrateInit:
 	migrate create -ext sql -dir db/migration -seq $(name)
 
@@ -24,3 +35,6 @@ mockOrderSvc:
 
 checkLint:
 	golangci-lint run ./... -v
+
+fixLint:
+	golangci-lint run --fix
