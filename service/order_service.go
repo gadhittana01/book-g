@@ -17,8 +17,8 @@ import (
 const (
 	FailedToParseStringToUUID = "Failed to parse string to UUID"
 	FailedToCreateOrder       = "Failed to create order"
+	FailedToUpdateOrder       = "Failed to update order"
 	FailedToCreateOrderDetail = "Failed to create order detail"
-	FailedToCheckBookExists   = "Failed to check book exists"
 	FailedToGetOrder          = "Failed to get order"
 	FailedToCheckOrderExists  = "Failed to check order exists"
 	FailedToFindOrderByID     = "Failed to find order by ID"
@@ -28,29 +28,30 @@ const (
 	InvalidQuantity           = "Quantity must greater than zero"
 )
 
+type (
+	PaginationOrderResp = dto.PaginationResp[dto.GetOrderRes]
+)
+
 type OrderSvc interface {
 	CreateOrder(ctx context.Context, input dto.CreateOrderReq) dto.CreateOrderRes
-	GetOrder(ctx context.Context, input dto.GetOrderReq) dto.PaginationResp[dto.GetOrderRes]
+	GetOrder(ctx context.Context, input dto.GetOrderReq) PaginationOrderResp
 	GetOrderDetail(ctx context.Context, input dto.GetOrderDetailReq) dto.GetOrderDetailRes
 }
 
 type OrderSvcImpl struct {
 	repo     querier.Repository
 	config   *utils.BaseConfig
-	token    utils.TokenClient
 	cacheSvc utils.CacheSvc
 }
 
 func NewOrderSvc(
 	repo querier.Repository,
 	config *utils.BaseConfig,
-	token utils.TokenClient,
 	cacheSvc utils.CacheSvc,
 ) OrderSvc {
 	return &OrderSvcImpl{
 		repo:     repo,
 		config:   config,
-		token:    token,
 		cacheSvc: cacheSvc,
 	}
 }
@@ -58,6 +59,7 @@ func NewOrderSvc(
 func (s *OrderSvcImpl) CreateOrder(ctx context.Context, input dto.CreateOrderReq) dto.CreateOrderRes {
 	var resp dto.CreateOrderRes
 	var order querier.Order
+	var totalPrice float64
 	now := time.Now()
 	authPayload := utils.GetRequestCtx(ctx, constant.UserSession)
 
@@ -71,25 +73,31 @@ func (s *OrderSvcImpl) CreateOrder(ctx context.Context, input dto.CreateOrderReq
 			UserID: userID,
 			Date:   now,
 		})
-		utils.PanicIfAppError(err, FailedToCreateOrder, 422)
+		if err != nil {
+			return utils.CustomErrorWithTrace(err, FailedToCreateOrder, 422)
+		}
 
 		for _, item := range input.OrderDetail {
 			if item.BookID == "" {
-				utils.PanicAppError(InvalidBookID, 400)
+				return utils.CustomError(InvalidBookID, 400)
 			}
 
 			if item.Quantity <= 0 {
-				utils.PanicAppError(InvalidQuantity, 400)
+				return utils.CustomError(InvalidQuantity, 400)
 			}
 
 			bookID, err := uuid.Parse(item.BookID)
-			utils.PanicIfAppError(err, FailedToParseStringToUUID, 400)
+			if err != nil {
+				return utils.CustomErrorWithTrace(err, FailedToParseStringToUUID, 400)
+			}
 
 			isExists, err := repoTx.CheckBookExists(ctx, bookID)
-			utils.PanicIfAppError(err, FailedToCheckBookExists, 400)
+			if err != nil {
+				return utils.CustomErrorWithTrace(err, FailedToCheckBookExists, 400)
+			}
 
 			if !isExists {
-				utils.PanicAppError(BookNotExists, 400)
+				return utils.CustomError(BookNotExists, 400)
 			}
 
 			_, err = repoTx.CreateOrderDetail(ctx, querier.CreateOrderDetailParams{
@@ -97,16 +105,37 @@ func (s *OrderSvcImpl) CreateOrder(ctx context.Context, input dto.CreateOrderReq
 				BookID:   bookID,
 				Quantity: int32(item.Quantity),
 			})
-			utils.PanicIfAppError(err, FailedToCreateOrderDetail, 422)
+			if err != nil {
+				return utils.CustomErrorWithTrace(err, FailedToCreateOrderDetail, 422)
+			}
+
+			book, err := repoTx.FindBookByID(ctx, bookID)
+			if err != nil {
+				return utils.CustomErrorWithTrace(err, FailedToFindBookByID, 400)
+			}
+
+			itemPrice := book.Price * float64(item.Quantity)
+			totalPrice += itemPrice
+		}
+
+		order, err = repoTx.UpdateOrderByID(ctx, querier.UpdateOrderByIDParams{
+			ID:         order.ID,
+			TotalPrice: totalPrice,
+		})
+		if err != nil {
+			return utils.CustomErrorWithTrace(err, FailedToUpdateOrder, 422)
 		}
 
 		return nil
 	})
 	utils.PanicIfError(err)
+	s.cacheSvc.ClearCaches([]string{constant.OrderCacheKey}, authPayload.UserID)
 
 	resp = dto.CreateOrderRes{
-		OrderId: order.ID.String(),
-		Date:    order.Date.Format(constant.TimeFormat),
+		OrderId:    order.ID.String(),
+		Date:       order.Date.Format(constant.TimeFormat),
+		TotalPrice: order.TotalPrice,
+		Status:     order.Status,
 	}
 
 	return resp
@@ -147,10 +176,12 @@ func (s *OrderSvcImpl) GetOrder(ctx context.Context, input dto.GetOrderReq) dto.
 
 		return dto.ToPaginationResp(lo.Map(orders, func(item querier.Order, index int) dto.GetOrderRes {
 			return dto.GetOrderRes{
-				OrderId: item.ID.String(),
-				Date:    item.Date.Format(constant.TimeFormat),
+				OrderId:    item.ID.String(),
+				Date:       item.Date.Format(constant.TimeFormat),
+				TotalPrice: item.TotalPrice,
+				Status:     item.Status,
 			}
-		}), int(input.Page), int(input.Limit), int(count)), err
+		}), int(input.Page), int(input.Limit), int(count)), nil
 	})
 	utils.PanicIfError(err)
 
@@ -188,12 +219,14 @@ func (s *OrderSvcImpl) GetOrderDetail(ctx context.Context, input dto.GetOrderDet
 			ID:     order.ID,
 		})
 		if err != nil {
-			return dto.GetOrderDetailRes{}, utils.CustomErrorWithTrace(err, FailedToGetOrder, 400)
+			return dto.GetOrderDetailRes{}, utils.CustomErrorWithTrace(err, FailedToCreateOrderDetail, 400)
 		}
 
 		return dto.GetOrderDetailRes{
-			OrderId: order.ID.String(),
-			Date:    order.Date.Format(constant.TimeFormat),
+			OrderId:    order.ID.String(),
+			Date:       order.Date.Format(constant.TimeFormat),
+			TotalPrice: order.TotalPrice,
+			Status:     order.Status,
 			OrderDetail: lo.Map(orderDetail, func(item querier.FindOrderDetailByOrderIDRow, index int) dto.OrderDetail {
 				return dto.OrderDetail{
 					OrderDetailID: item.ID.String(),

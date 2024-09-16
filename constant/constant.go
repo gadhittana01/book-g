@@ -5,6 +5,7 @@ type ContextKeyType string
 // cache keys
 const (
 	OrderCacheKey = "order"
+	BookCacheKey  = "book"
 )
 
 const (

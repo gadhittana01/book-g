@@ -21,3 +21,104 @@ func (q *Queries) CheckBookExists(ctx context.Context, id uuid.UUID) (bool, erro
 	err := row.Scan(&exists)
 	return exists, err
 }
+
+const createBook = `-- name: CreateBook :one
+INSERT INTO "book"(title, description, author, price) VALUES
+($1, $2, $3, $4) RETURNING id, title, description, author, price, created_at, updated_at
+`
+
+type CreateBookParams struct {
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	Author      string  `json:"author"`
+	Price       float64 `json:"price"`
+}
+
+func (q *Queries) CreateBook(ctx context.Context, arg CreateBookParams) (Book, error) {
+	row := q.db.QueryRow(ctx, createBook,
+		arg.Title,
+		arg.Description,
+		arg.Author,
+		arg.Price,
+	)
+	var i Book
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Description,
+		&i.Author,
+		&i.Price,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const findBook = `-- name: FindBook :many
+SELECT id, title, description, author, price, created_at, updated_at FROM "book" AS b
+ORDER BY b.created_at DESC
+LIMIT $1 OFFSET $2
+`
+
+type FindBookParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) FindBook(ctx context.Context, arg FindBookParams) ([]Book, error) {
+	rows, err := q.db.Query(ctx, findBook, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Book{}
+	for rows.Next() {
+		var i Book
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Description,
+			&i.Author,
+			&i.Price,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findBookByID = `-- name: FindBookByID :one
+SELECT id, title, description, author, price, created_at, updated_at FROM "book" WHERE id=$1
+`
+
+func (q *Queries) FindBookByID(ctx context.Context, id uuid.UUID) (Book, error) {
+	row := q.db.QueryRow(ctx, findBookByID, id)
+	var i Book
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Description,
+		&i.Author,
+		&i.Price,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getBookCount = `-- name: GetBookCount :one
+SELECT COUNT(o.*) FROM (SELECT id, title, description, author, price, created_at, updated_at FROM "book" AS b) AS o
+`
+
+func (q *Queries) GetBookCount(ctx context.Context) (int64, error) {
+	row := q.db.QueryRow(ctx, getBookCount)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}

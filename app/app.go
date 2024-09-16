@@ -19,18 +19,21 @@ type AppImpl struct {
 	config       *utils.BaseConfig
 	userHandler  handler.UserHandler
 	orderHandler handler.OrderHandler
+	bookHandler  handler.BookHandler
 }
 
 func NewApp(route *chi.Mux,
 	config *utils.BaseConfig,
 	userHandler handler.UserHandler,
 	orderHandler handler.OrderHandler,
+	bookHandler handler.BookHandler,
 ) App {
 	return &AppImpl{
 		route:        route,
 		config:       config,
 		userHandler:  userHandler,
 		orderHandler: orderHandler,
+		bookHandler:  bookHandler,
 	}
 }
 
@@ -43,6 +46,7 @@ func (s *AppImpl) Start() {
 
 	s.userHandler.SetupUserRoutes(s.route)
 	s.orderHandler.SetupOrderRoutes(s.route)
+	s.bookHandler.SetupBookRoutes(s.route)
 
 	s.route.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		utils.GenerateErrorResp[any](w, nil, 404)

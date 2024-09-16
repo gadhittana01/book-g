@@ -46,7 +46,7 @@ func (h *OrderHandlerImpl) CreateOrder(w http.ResponseWriter, r *http.Request) {
 
 	resp := h.orderSvc.CreateOrder(r.Context(), input)
 
-	utils.GenerateSuccessResp(w, resp, http.StatusOK)
+	utils.GenerateSuccessResp(w, resp, http.StatusCreated)
 }
 
 func (h *OrderHandlerImpl) GetOrder(w http.ResponseWriter, r *http.Request) {

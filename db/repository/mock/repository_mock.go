@@ -83,6 +83,21 @@ func (mr *MockRepositoryMockRecorder) CheckOrderExists(ctx, id interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckOrderExists", reflect.TypeOf((*MockRepository)(nil).CheckOrderExists), ctx, id)
 }
 
+// CreateBook mocks base method.
+func (m *MockRepository) CreateBook(ctx context.Context, arg querier.CreateBookParams) (querier.Book, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateBook", ctx, arg)
+	ret0, _ := ret[0].(querier.Book)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateBook indicates an expected call of CreateBook.
+func (mr *MockRepositoryMockRecorder) CreateBook(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateBook", reflect.TypeOf((*MockRepository)(nil).CreateBook), ctx, arg)
+}
+
 // CreateOrder mocks base method.
 func (m *MockRepository) CreateOrder(ctx context.Context, arg querier.CreateOrderParams) (querier.Order, error) {
 	m.ctrl.T.Helper()
@@ -126,6 +141,36 @@ func (m *MockRepository) CreateUser(ctx context.Context, arg querier.CreateUserP
 func (mr *MockRepositoryMockRecorder) CreateUser(ctx, arg interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockRepository)(nil).CreateUser), ctx, arg)
+}
+
+// FindBook mocks base method.
+func (m *MockRepository) FindBook(ctx context.Context, arg querier.FindBookParams) ([]querier.Book, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindBook", ctx, arg)
+	ret0, _ := ret[0].([]querier.Book)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindBook indicates an expected call of FindBook.
+func (mr *MockRepositoryMockRecorder) FindBook(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindBook", reflect.TypeOf((*MockRepository)(nil).FindBook), ctx, arg)
+}
+
+// FindBookByID mocks base method.
+func (m *MockRepository) FindBookByID(ctx context.Context, id uuid.UUID) (querier.Book, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindBookByID", ctx, id)
+	ret0, _ := ret[0].(querier.Book)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindBookByID indicates an expected call of FindBookByID.
+func (mr *MockRepositoryMockRecorder) FindBookByID(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindBookByID", reflect.TypeOf((*MockRepository)(nil).FindBookByID), ctx, id)
 }
 
 // FindOrderByID mocks base method.
@@ -188,6 +233,21 @@ func (mr *MockRepositoryMockRecorder) FindUserByEmail(ctx, email interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUserByEmail", reflect.TypeOf((*MockRepository)(nil).FindUserByEmail), ctx, email)
 }
 
+// GetBookCount mocks base method.
+func (m *MockRepository) GetBookCount(ctx context.Context) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBookCount", ctx)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetBookCount indicates an expected call of GetBookCount.
+func (mr *MockRepositoryMockRecorder) GetBookCount(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBookCount", reflect.TypeOf((*MockRepository)(nil).GetBookCount), ctx)
+}
+
 // GetDB mocks base method.
 func (m *MockRepository) GetDB() utils.PGXPool {
 	m.ctrl.T.Helper()
@@ -215,6 +275,21 @@ func (m *MockRepository) GetOrderCountByUserId(ctx context.Context, userID uuid.
 func (mr *MockRepositoryMockRecorder) GetOrderCountByUserId(ctx, userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrderCountByUserId", reflect.TypeOf((*MockRepository)(nil).GetOrderCountByUserId), ctx, userID)
+}
+
+// UpdateOrderByID mocks base method.
+func (m *MockRepository) UpdateOrderByID(ctx context.Context, arg querier.UpdateOrderByIDParams) (querier.Order, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateOrderByID", ctx, arg)
+	ret0, _ := ret[0].(querier.Order)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateOrderByID indicates an expected call of UpdateOrderByID.
+func (mr *MockRepositoryMockRecorder) UpdateOrderByID(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOrderByID", reflect.TypeOf((*MockRepository)(nil).UpdateOrderByID), ctx, arg)
 }
 
 // WithTx mocks base method.

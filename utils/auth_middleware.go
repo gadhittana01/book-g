@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 
 	"github.com/gadhittana-01/book-go/constant"
@@ -68,6 +69,13 @@ func (m *AuthMiddlewareImpl) CheckIsAuthenticated(handler func(w http.ResponseWr
 
 func AppendRequestCtx(r *http.Request, key constant.ContextKeyType, input interface{}) context.Context {
 	return context.WithValue(r.Context(), constant.UserSession, input)
+}
+
+func SetRequestContext(userID string) context.Context {
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	return AppendRequestCtx(req, constant.UserSession, &AuthPayload{
+		UserID: userID,
+	})
 }
 
 func GetRequestCtx(ctx context.Context, ctxKey constant.ContextKeyType) *AuthPayload {

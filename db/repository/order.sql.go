@@ -24,22 +24,25 @@ func (q *Queries) CheckOrderExists(ctx context.Context, id uuid.UUID) (bool, err
 }
 
 const createOrder = `-- name: CreateOrder :one
-INSERT INTO "order"(user_id, date) VALUES
-($1, $2) RETURNING id, user_id, date, created_at, updated_at
+INSERT INTO "order"(user_id, date, total_price) VALUES
+($1, $2, $3) RETURNING id, user_id, date, total_price, status, created_at, updated_at
 `
 
 type CreateOrderParams struct {
-	UserID uuid.UUID `json:"user_id"`
-	Date   time.Time `json:"date"`
+	UserID     uuid.UUID `json:"user_id"`
+	Date       time.Time `json:"date"`
+	TotalPrice float64   `json:"total_price"`
 }
 
 func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error) {
-	row := q.db.QueryRow(ctx, createOrder, arg.UserID, arg.Date)
+	row := q.db.QueryRow(ctx, createOrder, arg.UserID, arg.Date, arg.TotalPrice)
 	var i Order
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
 		&i.Date,
+		&i.TotalPrice,
+		&i.Status,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -72,7 +75,7 @@ func (q *Queries) CreateOrderDetail(ctx context.Context, arg CreateOrderDetailPa
 }
 
 const findOrderByID = `-- name: FindOrderByID :one
-SELECT id, user_id, date, created_at, updated_at FROM "order" AS o
+SELECT id, user_id, date, total_price, status, created_at, updated_at FROM "order" AS o
 WHERE o.user_id=$1 AND o.id=$2
 `
 
@@ -88,6 +91,8 @@ func (q *Queries) FindOrderByID(ctx context.Context, arg FindOrderByIDParams) (O
 		&i.ID,
 		&i.UserID,
 		&i.Date,
+		&i.TotalPrice,
+		&i.Status,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -95,7 +100,7 @@ func (q *Queries) FindOrderByID(ctx context.Context, arg FindOrderByIDParams) (O
 }
 
 const findOrderByUserID = `-- name: FindOrderByUserID :many
-SELECT id, user_id, date, created_at, updated_at FROM "order" AS o
+SELECT id, user_id, date, total_price, status, created_at, updated_at FROM "order" AS o
 WHERE o.user_id=$1
 ORDER BY o.date DESC
 LIMIT $2 OFFSET $3
@@ -120,6 +125,8 @@ func (q *Queries) FindOrderByUserID(ctx context.Context, arg FindOrderByUserIDPa
 			&i.ID,
 			&i.UserID,
 			&i.Date,
+			&i.TotalPrice,
+			&i.Status,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -136,7 +143,8 @@ func (q *Queries) FindOrderByUserID(ctx context.Context, arg FindOrderByUserIDPa
 const findOrderDetailByOrderID = `-- name: FindOrderDetailByOrderID :many
 SELECT 
     o.id, o.date, od.book_id, b.title,
-    b.description, b.author, od.quantity
+    o.total_price, o.status, b.description, 
+    b.author, od.quantity, b.price
 FROM "order" AS o
 JOIN "order_detail" od 
 ON o.id = od.order_id JOIN "book" AS b
@@ -154,9 +162,12 @@ type FindOrderDetailByOrderIDRow struct {
 	Date        time.Time `json:"date"`
 	BookID      uuid.UUID `json:"book_id"`
 	Title       string    `json:"title"`
+	TotalPrice  float64   `json:"total_price"`
+	Status      string    `json:"status"`
 	Description string    `json:"description"`
 	Author      string    `json:"author"`
 	Quantity    int32     `json:"quantity"`
+	Price       float64   `json:"price"`
 }
 
 func (q *Queries) FindOrderDetailByOrderID(ctx context.Context, arg FindOrderDetailByOrderIDParams) ([]FindOrderDetailByOrderIDRow, error) {
@@ -173,9 +184,12 @@ func (q *Queries) FindOrderDetailByOrderID(ctx context.Context, arg FindOrderDet
 			&i.Date,
 			&i.BookID,
 			&i.Title,
+			&i.TotalPrice,
+			&i.Status,
 			&i.Description,
 			&i.Author,
 			&i.Quantity,
+			&i.Price,
 		); err != nil {
 			return nil, err
 		}
@@ -188,7 +202,7 @@ func (q *Queries) FindOrderDetailByOrderID(ctx context.Context, arg FindOrderDet
 }
 
 const getOrderCountByUserId = `-- name: GetOrderCountByUserId :one
-SELECT COUNT(o.*) FROM (SELECT id, user_id, date, created_at, updated_at FROM "order" AS o
+SELECT COUNT(o.*) FROM (SELECT id, user_id, date, total_price, status, created_at, updated_at FROM "order" AS o
 WHERE o.user_id=$1) AS o
 `
 
@@ -197,4 +211,30 @@ func (q *Queries) GetOrderCountByUserId(ctx context.Context, userID uuid.UUID) (
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const updateOrderByID = `-- name: UpdateOrderByID :one
+UPDATE "order"
+SET total_price=$2
+WHERE id=$1 RETURNING id, user_id, date, total_price, status, created_at, updated_at
+`
+
+type UpdateOrderByIDParams struct {
+	ID         uuid.UUID `json:"id"`
+	TotalPrice float64   `json:"total_price"`
+}
+
+func (q *Queries) UpdateOrderByID(ctx context.Context, arg UpdateOrderByIDParams) (Order, error) {
+	row := q.db.QueryRow(ctx, updateOrderByID, arg.ID, arg.TotalPrice)
+	var i Order
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Date,
+		&i.TotalPrice,
+		&i.Status,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

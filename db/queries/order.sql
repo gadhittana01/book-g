@@ -1,6 +1,11 @@
 -- name: CreateOrder :one
-INSERT INTO "order"(user_id, date) VALUES
-($1, $2) RETURNING *;
+INSERT INTO "order"(user_id, date, total_price) VALUES
+($1, $2, $3) RETURNING *;
+
+-- name: UpdateOrderByID :one
+UPDATE "order"
+SET total_price=$2
+WHERE id=$1 RETURNING *;
 
 -- name: CreateOrderDetail :one
 INSERT INTO "order_detail"(order_id, book_id, quantity) VALUES
@@ -26,7 +31,8 @@ SELECT EXISTS(SELECT id FROM "order" WHERE id=$1);
 -- name: FindOrderDetailByOrderID :many
 SELECT 
     o.id, o.date, od.book_id, b.title,
-    b.description, b.author, od.quantity
+    o.total_price, o.status, b.description, 
+    b.author, od.quantity, b.price
 FROM "order" AS o
 JOIN "order_detail" od 
 ON o.id = od.order_id JOIN "book" AS b

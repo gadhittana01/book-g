@@ -26,6 +26,11 @@ var orderHandlerSet = wire.NewSet(
 	service.NewOrderSvc,
 )
 
+var bookHandlerSet = wire.NewSet(
+	handler.NewBookHandler,
+	service.NewBookSvc,
+)
+
 var authMiddlewareSet = wire.NewSet(
 	utils.NewAuthMiddleware,
 )
@@ -44,6 +49,7 @@ func InitializeApp(
 	wire.Build(
 		userHandlerSet,
 		orderHandlerSet,
+		bookHandlerSet,
 		cacheSet,
 		authMiddlewareSet,
 		app.NewApp,

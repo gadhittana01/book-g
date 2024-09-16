@@ -1,15 +1,23 @@
 version: '3.9'
 services:
   users:
-    container_name: users
+    container_name: book-go
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '8000:8080'
+      - '8080:8080'
     depends_on:
       postgres:
         condition: service_healthy
+  redis:
+    container_name: redis-container
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --requirepass 'password'
 
   postgres:
     container_name: users-pg
@@ -25,4 +33,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+volumes:
+  pgdata:
+  redis_data:
     

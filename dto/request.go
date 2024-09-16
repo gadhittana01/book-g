@@ -28,5 +28,17 @@ type GetOrderReq struct {
 }
 
 type GetOrderDetailReq struct {
-	OrderID uuid.UUID `json:"orderId"`
+	OrderID uuid.UUID `json:"orderId" validate:"required"`
+}
+
+type CreateBookReq struct {
+	Title       string  `json:"title" validate:"required"`
+	Description string  `json:"description" validate:"required"`
+	Author      string  `json:"author" validate:"required"`
+	Price       float64 `json:"price" validate:"required"`
+}
+
+type GetBookReq struct {
+	Page  int32 `json:"page"`
+	Limit int32 `json:"limit"`
 }

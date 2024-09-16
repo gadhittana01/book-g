@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS "book" (
   "title" VARCHAR NOT NULL,
   "description" VARCHAR NOT NULL,
   "author" VARCHAR NOT NULL,
+  "price" DECIMAL NOT NULL,
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT (NOW()),
   "updated_at" TIMESTAMPTZ NOT NULL DEFAULT (NOW())
 );
@@ -20,6 +21,8 @@ CREATE TABLE IF NOT EXISTS "order" (
   "id" UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   "user_id" UUID NOT NULL,
   "date" TIMESTAMPTZ NOT NULL,
+  "total_price" DECIMAL NOT NULL DEFAULT 0,
+  "status" TEXT NOT NULL DEFAULT 'pending', -- e.g., pending, confirmed, shipped, delivered, cancelled
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT (NOW()),
   "updated_at" TIMESTAMPTZ NOT NULL DEFAULT (NOW())
 );

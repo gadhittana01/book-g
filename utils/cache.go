@@ -5,9 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"testing"
 	"time"
 
+	"github.com/alicebob/miniredis"
 	"github.com/redis/go-redis/v9"
+	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
@@ -30,6 +33,7 @@ type CacheSvc interface {
 	Incr(ctx context.Context, key string) (int64, error)
 	Expire(ctx context.Context, key string, expiration time.Duration) error
 	TTL(ctx context.Context, key string) time.Duration
+	ClearCaches(keys []string, identifier string)
 }
 
 type CacheSvcImpl struct {
@@ -54,6 +58,7 @@ func NewRedisClient(config *BaseConfig) *redis.Client {
 		DB:       config.RedisDB,
 		Username: config.RedisUsername,
 	})
+
 	return rdb
 }
 
@@ -238,4 +243,14 @@ func BuildPrefixKey(keys ...string) string {
 	}
 
 	return prefixKey
+}
+
+func InitCacheSvc(t *testing.T, config *BaseConfig) CacheSvc {
+	mr, err := miniredis.Run()
+	assert.NoError(t, err)
+	redisClient := redis.NewClient(&redis.Options{
+		Addr: mr.Addr(),
+	})
+
+	return NewCacheSvc(config, redisClient)
 }

@@ -26,10 +26,12 @@ func InitializeApp(route *chi.Mux, DB utils.PGXPool, config *utils.BaseConfig) (
 	userHandler := handler.NewUserHandler(userSvc)
 	client := utils.NewRedisClient(config)
 	cacheSvc := utils.NewCacheSvc(config, client)
-	orderSvc := service.NewOrderSvc(repository, config, tokenClient, cacheSvc)
+	orderSvc := service.NewOrderSvc(repository, config, cacheSvc)
 	authMiddleware := utils.NewAuthMiddleware(config, tokenClient)
 	orderHandler := handler.NewOrderHandler(orderSvc, authMiddleware)
-	appApp := app.NewApp(route, config, userHandler, orderHandler)
+	bookSvc := service.NewBookSvc(repository, config, cacheSvc)
+	bookHandler := handler.NewBookHandler(bookSvc, authMiddleware)
+	appApp := app.NewApp(route, config, userHandler, orderHandler, bookHandler)
 	return appApp, nil
 }
 
@@ -38,6 +40,8 @@ func InitializeApp(route *chi.Mux, DB utils.PGXPool, config *utils.BaseConfig) (
 var userHandlerSet = wire.NewSet(querier.NewRepository, utils.NewToken, handler.NewUserHandler, service.NewUserSvc)
 
 var orderHandlerSet = wire.NewSet(handler.NewOrderHandler, service.NewOrderSvc)
+
+var bookHandlerSet = wire.NewSet(handler.NewBookHandler, service.NewBookSvc)
 
 var authMiddlewareSet = wire.NewSet(utils.NewAuthMiddleware)
 
