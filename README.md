@@ -2,7 +2,7 @@
 
 
 ## Introduction
-This project is a online book store Go-based application, order. It uses various tools like Docker, `migrate`, `mockgen`, and `golangci-lint` to ensure smooth development, testing, and deployment workflows.
+This project is a online book store Go-based application. It uses various tools like Docker, `migrate`, `mockgen`, and `golangci-lint` to ensure smooth development, testing, and deployment workflows.
 
 ## Prerequisites to contribute
 
