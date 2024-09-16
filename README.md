@@ -29,11 +29,6 @@ make start
 make migrateInit name="your migration name"
 ```
 
-2. Create a new database migration
-```bash
-make migrateInit
-```
-
 3. Run the tests with race conditions and code coverage
 ```bash
 make test
