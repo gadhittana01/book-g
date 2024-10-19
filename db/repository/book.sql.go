@@ -122,3 +122,36 @@ func (q *Queries) GetBookCount(ctx context.Context) (int64, error) {
 	err := row.Scan(&count)
 	return count, err
 }
+
+const getBookPurchasedByUserID = `-- name: GetBookPurchasedByUserID :many
+SELECT DISTINCT book_id, b.title, b. description from "order" o join "order_detail" od
+on o.id = od.order_id join book b
+on od.book_id = b.id
+where user_id = $1
+`
+
+type GetBookPurchasedByUserIDRow struct {
+	BookID      uuid.UUID `json:"book_id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+}
+
+func (q *Queries) GetBookPurchasedByUserID(ctx context.Context, userID uuid.UUID) ([]GetBookPurchasedByUserIDRow, error) {
+	rows, err := q.db.Query(ctx, getBookPurchasedByUserID, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetBookPurchasedByUserIDRow{}
+	for rows.Next() {
+		var i GetBookPurchasedByUserIDRow
+		if err := rows.Scan(&i.BookID, &i.Title, &i.Description); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

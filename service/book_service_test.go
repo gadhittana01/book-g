@@ -9,7 +9,7 @@ import (
 	querier "github.com/gadhittana-01/book-go/db/repository"
 	mockrepo "github.com/gadhittana-01/book-go/db/repository/mock"
 	"github.com/gadhittana-01/book-go/dto"
-	"github.com/gadhittana-01/book-go/utils"
+	"github.com/gadhittana01/go-modules/utils"
 	"github.com/golang/mock/gomock"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"

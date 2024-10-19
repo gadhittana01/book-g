@@ -25,6 +25,7 @@ type Querier interface {
 	FindOrderDetailByOrderID(ctx context.Context, arg FindOrderDetailByOrderIDParams) ([]FindOrderDetailByOrderIDRow, error)
 	FindUserByEmail(ctx context.Context, email string) (User, error)
 	GetBookCount(ctx context.Context) (int64, error)
+	GetBookPurchasedByUserID(ctx context.Context, userID uuid.UUID) ([]GetBookPurchasedByUserIDRow, error)
 	GetOrderCountByUserId(ctx context.Context, userID uuid.UUID) (int64, error)
 	UpdateOrderByID(ctx context.Context, arg UpdateOrderByIDParams) (Order, error)
 }

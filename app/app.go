@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gadhittana-01/book-go/handler"
-	"github.com/gadhittana-01/book-go/utils"
+	"github.com/gadhittana01/go-modules/utils"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 )

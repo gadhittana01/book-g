@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	querier "github.com/gadhittana-01/book-go/db/repository"
-	utils "github.com/gadhittana-01/book-go/utils"
+	utils "github.com/gadhittana01/go-modules/utils"
 	gomock "github.com/golang/mock/gomock"
 	uuid "github.com/google/uuid"
 	pgx "github.com/jackc/pgx/v5"
@@ -246,6 +246,21 @@ func (m *MockRepository) GetBookCount(ctx context.Context) (int64, error) {
 func (mr *MockRepositoryMockRecorder) GetBookCount(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBookCount", reflect.TypeOf((*MockRepository)(nil).GetBookCount), ctx)
+}
+
+// GetBookPurchasedByUserID mocks base method.
+func (m *MockRepository) GetBookPurchasedByUserID(ctx context.Context, userID uuid.UUID) ([]querier.GetBookPurchasedByUserIDRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBookPurchasedByUserID", ctx, userID)
+	ret0, _ := ret[0].([]querier.GetBookPurchasedByUserIDRow)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetBookPurchasedByUserID indicates an expected call of GetBookPurchasedByUserID.
+func (mr *MockRepositoryMockRecorder) GetBookPurchasedByUserID(ctx, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBookPurchasedByUserID", reflect.TypeOf((*MockRepository)(nil).GetBookPurchasedByUserID), ctx, userID)
 }
 
 // GetDB mocks base method.

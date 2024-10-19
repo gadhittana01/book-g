@@ -11,7 +11,7 @@ import (
 	"github.com/gadhittana-01/book-go/db/repository"
 	"github.com/gadhittana-01/book-go/handler"
 	"github.com/gadhittana-01/book-go/service"
-	"github.com/gadhittana-01/book-go/utils"
+	"github.com/gadhittana01/go-modules/utils"
 	"github.com/go-chi/chi"
 	"github.com/google/wire"
 	"github.com/redis/go-redis/v9"

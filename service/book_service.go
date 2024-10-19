@@ -6,17 +6,20 @@ import (
 	"github.com/gadhittana-01/book-go/constant"
 	querier "github.com/gadhittana-01/book-go/db/repository"
 	"github.com/gadhittana-01/book-go/dto"
-	"github.com/gadhittana-01/book-go/utils"
+	utilsConstant "github.com/gadhittana01/go-modules/constant"
+	"github.com/gadhittana01/go-modules/utils"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/samber/lo"
 	"golang.org/x/sync/errgroup"
 )
 
 const (
-	FailedToFindBookByID    = "Failed to find book by ID"
-	FailedToCheckBookExists = "Failed to check book exists"
-	FailedToCreateBook      = "Failed to create book"
-	FailedToGetBook         = "Failed to get book"
+	FailedToFindBookByID             = "Failed to find book by ID"
+	FailedToCheckBookExists          = "Failed to check book exists"
+	FailedToCreateBook               = "Failed to create book"
+	FailedToGetBook                  = "Failed to get book"
+	FailedToGetBookPurchasedByUserID = "Failed to get book purchased by user id"
 )
 
 type (
@@ -26,6 +29,7 @@ type (
 type BookSvc interface {
 	CreateBook(ctx context.Context, input dto.CreateBookReq) dto.CreateBookRes
 	GetBook(ctx context.Context, input dto.GetBookReq) PaginationBookResp
+	GetBookPuchasedByUser(ctx context.Context) []dto.GetBookPuchasedByUserRes
 }
 
 type BookSvcImpl struct {
@@ -39,6 +43,7 @@ func NewBookSvc(
 	config *utils.BaseConfig,
 	cacheSvc utils.CacheSvc,
 ) BookSvc {
+
 	return &BookSvcImpl{
 		repo:     repo,
 		config:   config,
@@ -120,4 +125,22 @@ func (s *BookSvcImpl) GetBook(ctx context.Context, input dto.GetBookReq) dto.Pag
 	utils.PanicIfError(err)
 
 	return resp
+}
+
+func (s *BookSvcImpl) GetBookPuchasedByUser(ctx context.Context) []dto.GetBookPuchasedByUserRes {
+	authPayload := utils.GetRequestCtx(ctx, utilsConstant.UserSession)
+
+	userID, err := uuid.Parse(authPayload.UserID)
+	utils.PanicIfAppError(err, FailedToParseStringToUUID, 400)
+
+	res, err := s.repo.GetBookPurchasedByUserID(ctx, userID)
+	utils.PanicIfAppError(err, FailedToGetBookPurchasedByUserID, 400)
+
+	return lo.Map(res, func(item querier.GetBookPurchasedByUserIDRow, index int) dto.GetBookPuchasedByUserRes {
+		return dto.GetBookPuchasedByUserRes{
+			ID:          item.BookID.String(),
+			Title:       item.Title,
+			Description: item.Description,
+		}
+	})
 }

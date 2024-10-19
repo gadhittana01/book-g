@@ -15,3 +15,9 @@ LIMIT $1 OFFSET $2;
 
 -- name: GetBookCount :one
 SELECT COUNT(o.*) FROM (SELECT * FROM "book" AS b) AS o;
+
+-- name: GetBookPurchasedByUserID :many
+SELECT DISTINCT book_id, b.title, b. description from "order" o join "order_detail" od
+on o.id = od.order_id join book b
+on od.book_id = b.id
+where user_id = $1;

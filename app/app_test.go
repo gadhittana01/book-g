@@ -6,8 +6,8 @@ import (
 
 	"github.com/gadhittana-01/book-go/handler"
 	mocksvc "github.com/gadhittana-01/book-go/service/mock"
-	"github.com/gadhittana-01/book-go/utils"
-	mockutl "github.com/gadhittana-01/book-go/utils/mock"
+	"github.com/gadhittana01/go-modules/utils"
+	mockutl "github.com/gadhittana01/go-modules/utils/mock"
 	"github.com/go-chi/chi"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"

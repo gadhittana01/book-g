@@ -7,7 +7,8 @@ import (
 	"github.com/gadhittana-01/book-go/constant"
 	querier "github.com/gadhittana-01/book-go/db/repository"
 	"github.com/gadhittana-01/book-go/dto"
-	"github.com/gadhittana-01/book-go/utils"
+	utilsConstant "github.com/gadhittana01/go-modules/constant"
+	"github.com/gadhittana01/go-modules/utils"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/samber/lo"
@@ -61,7 +62,7 @@ func (s *OrderSvcImpl) CreateOrder(ctx context.Context, input dto.CreateOrderReq
 	var order querier.Order
 	var totalPrice float64
 	now := time.Now()
-	authPayload := utils.GetRequestCtx(ctx, constant.UserSession)
+	authPayload := utils.GetRequestCtx(ctx, utilsConstant.UserSession)
 
 	userID, err := uuid.Parse(authPayload.UserID)
 	utils.PanicIfAppError(err, FailedToParseStringToUUID, 400)
@@ -142,7 +143,7 @@ func (s *OrderSvcImpl) CreateOrder(ctx context.Context, input dto.CreateOrderReq
 }
 
 func (s *OrderSvcImpl) GetOrder(ctx context.Context, input dto.GetOrderReq) dto.PaginationResp[dto.GetOrderRes] {
-	authPayload := utils.GetRequestCtx(ctx, constant.UserSession)
+	authPayload := utils.GetRequestCtx(ctx, utilsConstant.UserSession)
 
 	userID, err := uuid.Parse(authPayload.UserID)
 	utils.PanicIfAppError(err, FailedToParseStringToUUID, 400)
@@ -189,7 +190,7 @@ func (s *OrderSvcImpl) GetOrder(ctx context.Context, input dto.GetOrderReq) dto.
 }
 
 func (s *OrderSvcImpl) GetOrderDetail(ctx context.Context, input dto.GetOrderDetailReq) dto.GetOrderDetailRes {
-	authPayload := utils.GetRequestCtx(ctx, constant.UserSession)
+	authPayload := utils.GetRequestCtx(ctx, utilsConstant.UserSession)
 
 	userID, err := uuid.Parse(authPayload.UserID)
 	utils.PanicIfAppError(err, FailedToParseStringToUUID, 400)

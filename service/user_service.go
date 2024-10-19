@@ -5,7 +5,7 @@ import (
 
 	querier "github.com/gadhittana-01/book-go/db/repository"
 	"github.com/gadhittana-01/book-go/dto"
-	"github.com/gadhittana-01/book-go/utils"
+	"github.com/gadhittana01/go-modules/utils"
 	"github.com/jackc/pgx/v5"
 )
 

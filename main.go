@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/gadhittana-01/book-go/utils"
+	"github.com/gadhittana01/go-modules/utils"
 	"github.com/go-chi/chi"
 )
 

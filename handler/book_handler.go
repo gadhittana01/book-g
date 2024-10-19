@@ -6,7 +6,7 @@ import (
 	"github.com/gadhittana-01/book-go/constant"
 	"github.com/gadhittana-01/book-go/dto"
 	"github.com/gadhittana-01/book-go/service"
-	"github.com/gadhittana-01/book-go/utils"
+	"github.com/gadhittana01/go-modules/utils"
 	"github.com/go-chi/chi"
 )
 
@@ -53,7 +53,14 @@ func (h *BookHandlerImpl) GetBook(w http.ResponseWriter, r *http.Request) {
 	utils.GenerateSuccessResp(w, resp, http.StatusOK)
 }
 
+func (h *BookHandlerImpl) GetBookPuchasedByUser(w http.ResponseWriter, r *http.Request) {
+	resp := h.bookSvc.GetBookPuchasedByUser(r.Context())
+
+	utils.GenerateSuccessResp(w, resp, http.StatusOK)
+}
+
 func setupBookV1Routes(route *chi.Mux, h *BookHandlerImpl) {
 	route.Post("/v1/book", h.authMiddleware.CheckIsAuthenticated(h.CreateBook))
 	route.Get("/v1/book", h.authMiddleware.CheckIsAuthenticated(h.GetBook))
+	route.Get("/v1/user/book", h.authMiddleware.CheckIsAuthenticated(h.GetBookPuchasedByUser))
 }

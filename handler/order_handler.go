@@ -6,7 +6,7 @@ import (
 	"github.com/gadhittana-01/book-go/constant"
 	"github.com/gadhittana-01/book-go/dto"
 	"github.com/gadhittana-01/book-go/service"
-	"github.com/gadhittana-01/book-go/utils"
+	"github.com/gadhittana01/go-modules/utils"
 	"github.com/go-chi/chi"
 )
 

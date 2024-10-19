@@ -63,3 +63,17 @@ func (mr *MockBookSvcMockRecorder) GetBook(ctx, input interface{}) *gomock.Call 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBook", reflect.TypeOf((*MockBookSvc)(nil).GetBook), ctx, input)
 }
+
+// GetBookPuchasedByUser mocks base method.
+func (m *MockBookSvc) GetBookPuchasedByUser(ctx context.Context) []dto.GetBookPuchasedByUserRes {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBookPuchasedByUser", ctx)
+	ret0, _ := ret[0].([]dto.GetBookPuchasedByUserRes)
+	return ret0
+}
+
+// GetBookPuchasedByUser indicates an expected call of GetBookPuchasedByUser.
+func (mr *MockBookSvcMockRecorder) GetBookPuchasedByUser(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBookPuchasedByUser", reflect.TypeOf((*MockBookSvc)(nil).GetBookPuchasedByUser), ctx)
+}
