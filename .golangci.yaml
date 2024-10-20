@@ -4,7 +4,6 @@ linters:
     - gosimple
     - govet
     - ineffassign
-    - typecheck
     - unused
     - unconvert
     - gocyclo
