@@ -1,0 +1,35 @@
+linters:
+  enable:
+    - deadcode
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - typecheck
+    - unused
+    - unconvert
+    - varcheck
+    - gocyclo
+    - goconst
+    - gofumpt
+    - goimports
+    - misspell
+    - stylecheck
+issues:
+  exclude-rules:
+    - path: data/bv_master.go
+      text: STRATEGIS
+    - path: data/bv_master.go
+      text: PROFESSIONAL
+    - path: data/bv_master.go
+      text: TEH
+    
+skip-files:
+  - injector.go
+  - helper/test_helper.go
+  
+run:
+  build-tags:
+    - wireinject
+  tests: false
+  timeout: 5m
