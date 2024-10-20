@@ -13,13 +13,6 @@ linters:
     - misspell
     - stylecheck
 issues:
-  exclude-rules:
-    - path: data/bv_master.go
-      text: STRATEGIS
-    - path: data/bv_master.go
-      text: PROFESSIONAL
-    - path: data/bv_master.go
-      text: TEH
   exclude-files:
     - injector.go
     
