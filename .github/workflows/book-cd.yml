@@ -46,6 +46,11 @@ jobs:
         run: |
           docker build -t gcr.io/${{ secrets.PROJECT_ID }}/$SERVICE_NAME_HTTP:${{ github.sha }} --build-arg git_token="$GIT_TOKEN" -f $DOCKER_FILE_HTTP .
           docker push gcr.io/${{ secrets.PROJECT_ID }}/$SERVICE_NAME_HTTP:${{ github.sha }}
+
+      - name: Delete Docker Container after successful build (DEV)
+        run: |
+          docker rmi gcr.io/${{secrets.PROJECT_ID}}/$SERVICE_NAME_HTTP:${{ github.sha }}
+          docker rmi gcr.io/${{secrets.PROJECT_ID}}/$SERVICE_NAME_HTTP:${{ github.sha }}
       
       - name: Deploy to Cloud Run HTTP
         run: |
