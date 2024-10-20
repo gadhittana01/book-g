@@ -1,6 +1,5 @@
 linters:
   enable:
-    - deadcode
     - errcheck
     - gosimple
     - govet
@@ -8,7 +7,6 @@ linters:
     - typecheck
     - unused
     - unconvert
-    - varcheck
     - gocyclo
     - goconst
     - gofumpt
@@ -23,11 +21,9 @@ issues:
       text: PROFESSIONAL
     - path: data/bv_master.go
       text: TEH
+  exclude-files:
+    - injector.go
     
-skip-files:
-  - injector.go
-  - helper/test_helper.go
-  
 run:
   build-tags:
     - wireinject
