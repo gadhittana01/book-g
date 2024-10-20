@@ -9,7 +9,6 @@ on:
 
 jobs:
   Commit-GO:
-		permissions: write-all
     name: Check Commit
     runs-on: ubuntu-latest
     steps:
