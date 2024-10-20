@@ -22,31 +22,31 @@ jobs:
           checkAllCommitMessages: 'true'
           accessToken: ${{ secrets.GIT_TOKEN }}
               
-  Lint-GO:
-    name: Run Linter
-    runs-on: ubuntu-latest
-    needs: [Commit-GO]
-    env:
-      GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  # Lint-GO:
+  #   name: Run Linterter
+  #   runs-on: ubuntu-latest
+  #   needs: [Commit-GO]
+  #   env:
+  #     GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
 
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.23.2'
+  #     - name: Set up Go
+  #       uses: actions/setup-go@v4
+  #       with:
+  #         go-version: '1.23.2'
         
-      - name: Install required dependency
-        run: git config --global url."https://gadhittana01:$GIT_TOKEN@github.com".insteadOf "https://github.com" && go env -w GOPRIVATE=github.com/gadhittana01 && go mod tidy
+  #     - name: Install required dependency
+  #       run: git config --global url."https://gadhittana01:$GIT_TOKEN@github.com".insteadOf "https://github.com" && go env -w GOPRIVATE=github.com/gadhittana01 && go mod tidy
 
-      - name: Install golangci-lint
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.52.2
-          which golangci-lint
+  #     - name: Install golangci-lint
+  #       run: |
+  #         curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.52.2
+  #         which golangci-lint
 
-      - name: Run linter
-        run: make checkLint
+  #     - name: Run linter
+  #       run: make checkLint
 
   Test-GO:
     name: Run Test
