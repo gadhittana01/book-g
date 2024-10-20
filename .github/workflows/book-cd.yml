@@ -1,0 +1,53 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Book CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  Deploy:
+    env:
+      SERVICE_NAME_HTTP: book-go-http
+      DOCKER_FILE_HTTP: Dockerfile
+      HTTP_PORT: 8000
+			GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+      	uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23.2'
+      
+      - name: Install required dependency
+        run: git config --global url."https://gadhittana01:$GIT_TOKEN@github.com".insteadOf "https://github.com" && go env -w GOPRIVATE=github.com/gadhittana01 && go mod tidy
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.6.0
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Configure docker
+        run: |
+          gcloud --quiet auth configure-docker
+
+      - name: Build and push Docker image HTTP
+        run: |
+          docker build -t gcr.io/${{ secrets.PROJECT_ID }}/$SERVICE_NAME_HTTP:${{ github.sha }} -f $DOCKER_FILE_HTTP .
+          docker push gcr.io/${{ secrets.PROJECT_ID }}/$SERVICE_NAME_HTTP:${{ github.sha }}
+      
+      - name: Deploy to Cloud Run HTTP
+        run: |
+          gcloud run deploy $SERVICE_NAME_HTTP \
+            --image=gcr.io/${{ secrets.PROJECT_ID }}/$SERVICE_NAME_HTTP:${{ github.sha }} \
+            --platform=managed \
+            --region=${{ secrets.GCP_REGION }} \
+            --port=$HTTP_PORT \
+            --allow-unauthenticated
