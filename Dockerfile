@@ -4,6 +4,8 @@ FROM golang:1.23-alpine3.19 AS builder
 WORKDIR /app
 COPY ./ ./
 
+# Install Git
+RUN apt-get update && apt-get install -y git
 RUN go mod tidy
 RUN go build -o main .
 
