@@ -38,6 +38,10 @@ jobs:
       - name: Configure Docker
         run: gcloud --quiet auth configure-docker
 
+      - name: Fetch and re-populate env (DEV)
+        run: |
+          gcloud secrets versions access latest --secret=${{secrets.BOOK_SECRET}} --project=${{secrets.PROJECT_ID}} > config/app.env
+
       - name: Build and push Docker image HTTP
         run: |
           docker build -t gcr.io/${{ secrets.PROJECT_ID }}/$SERVICE_NAME_HTTP:${{ github.sha }} --build-arg git_token="$GIT_TOKEN" -f $DOCKER_FILE_HTTP .
