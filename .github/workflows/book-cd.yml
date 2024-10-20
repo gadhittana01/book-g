@@ -24,8 +24,9 @@ jobs:
         with:
           go-version: '1.23.2'
       
-			- name: Install required dependency
-				run: git config --global url."https://gadhittana01:$GIT_TOKEN@github.com".insteadOf "https://github.com" && go env -w GOPRIVATE=github.com/gadhittana01 && go mod tidy
+      - name: Install required dependency
+        run: |
+          git config --global url."https://gadhittana01:$GIT_TOKEN@github.com".insteadOf "https://github.com" && go env -w GOPRIVATE=github.com/gadhittana01 && go mod tidy
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.6.0
