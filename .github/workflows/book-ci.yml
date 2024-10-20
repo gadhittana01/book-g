@@ -1,0 +1,71 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Book CI
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  Commit-GO:
+    name: Check Commit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Line Length
+        uses: gsactions/commit-message-checker@v1
+        with:
+          pattern: '^[^#].{5,74}'
+          error: 'The maximum line length of 74 characters is exceeded.'
+          excludeDescription: 'true'
+          excludeTitle: 'true'
+          checkAllCommitMessages: 'true'
+          accessToken: ${{ secrets.GIT_TOKEN }}
+              
+  # Lint-GO:
+  #   name: Run Linterter
+  #   runs-on: ubuntu-latest
+  #   needs: [Commit-GO]
+  #   env:
+  #     GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+
+  #     - name: Set up Go
+  #       uses: actions/setup-go@v4
+  #       with:
+  #         go-version: '1.23.2'
+        
+  #     - name: Install required dependency
+  #       run: git config --global url."https://gadhittana01:$GIT_TOKEN@github.com".insteadOf "https://github.com" && go env -w GOPRIVATE=github.com/gadhittana01 && go mod tidy
+
+  #     - name: Install golangci-lint
+  #       run: |
+  #         curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.52.2
+  #         which golangci-lint
+
+  #     - name: Run linter
+  #       run: make checkLint
+
+  Test-GO:
+    name: Run Test
+    runs-on: ubuntu-latest
+    needs: [Commit-GO]
+    env:
+      SERVICE_NAME: book
+      GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23.2'
+      
+      - name: Install required dependency
+        run: git config --global url."https://gadhittana01:$GIT_TOKEN@github.com".insteadOf "https://github.com" && go env -w GOPRIVATE=github.com/gadhittana01 && go mod tidy
+
+      - name: Test
+        run: make test

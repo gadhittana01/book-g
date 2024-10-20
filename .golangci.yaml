@@ -1,0 +1,23 @@
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - unused
+    - unconvert
+    - gocyclo
+    - goconst
+    - gofumpt
+    - goimports
+    - misspell
+    - stylecheck
+issues:
+  exclude-files:
+    - injector.go
+    
+run:
+  build-tags:
+    - wireinject
+  tests: false
+  timeout: 5m
