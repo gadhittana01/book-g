@@ -20,7 +20,7 @@ jobs:
           excludeDescription: 'true'
           excludeTitle: 'true'
           checkAllCommitMessages: 'true'
-          accessToken: ${{ secrets.GITHUB_TOKEN }}
+          accessToken: ${{ secrets.GIT_TOKEN }}
               
   Lint-GO:
     name: Run Linter
