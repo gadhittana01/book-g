@@ -45,7 +45,12 @@ func (h *UserHandlerImpl) SignIn(w http.ResponseWriter, r *http.Request) {
 	utils.GenerateSuccessResp(w, resp, http.StatusOK)
 }
 
+func (h *UserHandlerImpl) HealthCheck(w http.ResponseWriter, r *http.Request) {
+	utils.GenerateSuccessResp(w, "OK", http.StatusOK)
+}
+
 func setupUserV1Routes(route *chi.Mux, h *UserHandlerImpl) {
+	route.Get("/v1/health-check", h.HealthCheck)
 	route.Post("/v1/sign-up", h.SignUp)
 	route.Post("/v1/sign-in", h.SignIn)
 }
