@@ -47,7 +47,7 @@ jobs:
         run: |
           gcloud run deploy $SERVICE_NAME_HTTP \
             --image=gcr.io/${{ secrets.PROJECT_ID }}/$SERVICE_NAME_HTTP:${{ github.sha }} \
-            --allow-unauthenticated \
             --platform=managed \
             --region=${{ secrets.GCP_REGION }} \
-            --port=$HTTP_PORT
+            --port=$HTTP_PORT \
+            --allow-unauthenticated
