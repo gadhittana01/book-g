@@ -50,7 +50,6 @@ jobs:
       - name: Delete Docker Container after successful build (DEV)
         run: |
           docker rmi gcr.io/${{secrets.PROJECT_ID}}/$SERVICE_NAME_HTTP:${{ github.sha }}
-          docker rmi gcr.io/${{secrets.PROJECT_ID}}/$SERVICE_NAME_HTTP:${{ github.sha }}
       
       - name: Deploy to Cloud Run HTTP
         run: |
