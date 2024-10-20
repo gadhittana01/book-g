@@ -40,7 +40,7 @@ jobs:
 
       - name: Build and push Docker image HTTP
         run: |
-          docker build -t gcr.io/${{ secrets.PROJECT_ID }}/$SERVICE_NAME_HTTP:${{ github.sha }} -f $DOCKER_FILE_HTTP .
+          docker build -t gcr.io/${{ secrets.PROJECT_ID }}/$SERVICE_NAME_HTTP:${{ github.sha }} --build-arg git_token="$GIT_TOKEN" -f $DOCKER_FILE_HTTP .
           docker push gcr.io/${{ secrets.PROJECT_ID }}/$SERVICE_NAME_HTTP:${{ github.sha }}
       
       - name: Deploy to Cloud Run HTTP
