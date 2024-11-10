@@ -155,6 +155,6 @@ jobs:
           else
             COLOR=orange
           fi
-          curl "https://img.shields.io/badge/code coverage-$total%25-$COLOR" > badge.svg
+          curl "https://img.shields.io/badge/coverage-$total%25-$COLOR" > badge.svg
           gsutil  -h "Cache-Control: no-cache" cp badge.svg gs://${BUCKET}/${SERVICE_NAME_HTTP}/codcov.svg
 
