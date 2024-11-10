@@ -103,7 +103,7 @@ jobs:
 
     env:
       SERVICE_NAME_HTTP: book-go-http
-      BUCKET_DEV: ${{secrets.BUCKET_DEV}}
+      BUCKET: ${{secrets.BUCKET}}
       GIT_TOKEN: ${{secrets.GIT_TOKEN}}
 
     steps:
@@ -153,5 +153,5 @@ jobs:
             COLOR=orange
           fi
           curl "https://img.shields.io/badge/coavrege-$total%25-$COLOR" > badge.svg
-          gsutil  -h "Cache-Control: no-cache" cp badge.svg gs://${BUCKET_DEV}/${SERVICE_NAME_HTTP}/codcov.svg
-          gsutil acl ch -u AllUsers:R gs://$BUCKET_DEV/$SERVICE_NAME_HTTP/codcov.svg
+          gsutil  -h "Cache-Control: no-cache" cp badge.svg gs://${BUCKET}/${SERVICE_NAME_HTTP}/codcov.svg
+          gsutil acl ch -u AllUsers:R gs://$BUCKET/$SERVICE_NAME_HTTP/codcov.svg
