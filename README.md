@@ -1,6 +1,6 @@
 # Book Go
 
-![cod cov](https://storage.googleapis.com/gadhittana01/book-go-http/codcov.svg)
+![cod cov](https://storage.cloud.google.com/gadhittana01/book-go-http/codcov.svg)
 
 ## Introduction
 This project is a online book store Go-based application. It uses various tools like Docker, `migrate`, `mockgen`, and `golangci-lint` to ensure smooth development, testing, and deployment workflows.
