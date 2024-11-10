@@ -154,4 +154,4 @@ jobs:
           fi
           curl "https://img.shields.io/badge/coavrege-$total%25-$COLOR" > badge.svg
           gsutil  -h "Cache-Control: no-cache" cp badge.svg gs://${BUCKET}/${SERVICE_NAME_HTTP}/codcov.svg
-          gsutil acl ch -u AllUsers:R gs://$BUCKET/$SERVICE_NAME_HTTP/codcov.svg
+
