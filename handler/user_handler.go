@@ -46,7 +46,7 @@ func (h *UserHandlerImpl) SignIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *UserHandlerImpl) HealthCheck(w http.ResponseWriter, r *http.Request) {
-	utils.GenerateSuccessResp(w, "OK", http.StatusOK)
+	utils.GenerateSuccessResp(w, "UP", http.StatusOK)
 }
 
 func setupUserV1Routes(route *chi.Mux, h *UserHandlerImpl) {
