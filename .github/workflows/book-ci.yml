@@ -115,23 +115,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Update status success
-        if: needs.Test-GO.outputs.isPassMinCoverage == 'true'
-        uses: ouzi-dev/commit-status-updater@v1.1.0
-        with:
-          token: ${{secrets.GIT_TOKEN}}
-          status: "success"
-          name: code cov
-          description: ${{needs.Test-GO.outputs.totalCoverage}}%
+      # - name: Update status success
+      #   if: needs.Test-GO.outputs.isPassMinCoverage == 'true'
+      #   uses: ouzi-dev/commit-status-updater@v1.1.0
+      #   with:
+      #     token: ${{secrets.GIT_TOKEN}}
+      #     status: "success"
+      #     name: code cov
+      #     description: ${{needs.Test-GO.outputs.totalCoverage}}%
       
-      - name: Update status failed
-        if: needs.Test-GO.outputs.isPassMinCoverage == 'false'
-        uses: ouzi-dev/commit-status-updater@v1.1.0
-        with:
-          token: ${{secrets.GIT_TOKEN}}
-          status: "error"
-          name: code cov
-          description: ${{needs.Test-GO.outputs.totalCoverage}}%
+      # - name: Update status failed
+      #   if: needs.Test-GO.outputs.isPassMinCoverage == 'false'
+      #   uses: ouzi-dev/commit-status-updater@v1.1.0
+      #   with:
+      #     token: ${{secrets.GIT_TOKEN}}
+      #     status: "error"
+      #     name: code cov
+      #     description: ${{needs.Test-GO.outputs.totalCoverage}}%
           
       - name: Check total coverage
         if: needs.Test-GO.outputs.isPassMinCoverage == 'false'
