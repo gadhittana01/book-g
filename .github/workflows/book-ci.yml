@@ -119,7 +119,7 @@ jobs:
         if: needs.Test-GO.outputs.isPassMinCoverage == 'true'
         uses: ouzi-dev/commit-status-updater@v1.1.0
         with:
-          token: ${{env.GIT_TOKEN}}
+          token: ${{secrets.GIT_TOKEN}}
           status: "success"
           name: code cov
           description: ${{needs.Test-GO.outputs.totalCoverage}}%
@@ -128,7 +128,7 @@ jobs:
         if: needs.Test-GO.outputs.isPassMinCoverage == 'false'
         uses: ouzi-dev/commit-status-updater@v1.1.0
         with:
-          token: ${{env.GIT_TOKEN}}
+          token: ${{secrets.GIT_TOKEN}}
           status: "error"
           name: code cov
           description: ${{needs.Test-GO.outputs.totalCoverage}}%
