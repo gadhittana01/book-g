@@ -56,6 +56,9 @@ jobs:
       SERVICE_NAME: book
       GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       THRESHOLD: ${{ secrets.THRESHOLD }}
+    outputs:
+      totalCoverage: ${{steps.test-coverage.outputs.total}}
+      isPassMinCoverage: ${{steps.test-coverage.outputs.isPassMinCoverage}}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
