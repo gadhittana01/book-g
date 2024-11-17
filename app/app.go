@@ -8,6 +8,7 @@ import (
 	"github.com/gadhittana01/go-modules/utils"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
+	openApiMiddleware "github.com/go-openapi/runtime/middleware"
 )
 
 type App interface {
@@ -43,6 +44,14 @@ func (s *AppImpl) Start() {
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 	}))
+
+	opts := openApiMiddleware.SwaggerUIOpts{
+		SpecURL: s.config.SwaggerURL,
+		Path:    "/v1/book/docs",
+	}
+	sh := openApiMiddleware.SwaggerUI(opts, nil)
+	s.route.Handle("/v1/book/docs/*", sh)
+	s.route.Handle("/swagger.yaml", http.FileServer(http.Dir("./docs")))
 
 	s.userHandler.SetupUserRoutes(s.route)
 	s.orderHandler.SetupOrderRoutes(s.route)

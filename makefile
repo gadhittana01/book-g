@@ -38,3 +38,6 @@ checkLint:
 
 fixLint:
 	golangci-lint run --fix
+
+swaggerLocal:
+	swag init && rm -rf docs/swagger.json

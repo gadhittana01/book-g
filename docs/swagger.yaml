@@ -1,0 +1,225 @@
+basePath: /
+definitions:
+  dto.ErrorMsgResp:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.FailedResp400:
+    properties:
+      errors:
+        items:
+          $ref: '#/definitions/dto.ErrorMsgResp'
+        type: array
+      statusCode:
+        default: 400
+        type: integer
+      success:
+        default: false
+        type: boolean
+    type: object
+  dto.FailedResp401:
+    properties:
+      errors:
+        items:
+          $ref: '#/definitions/dto.ErrorMsgResp'
+        type: array
+      statusCode:
+        default: 401
+        type: integer
+      success:
+        default: false
+        type: boolean
+    type: object
+  dto.FailedResp404:
+    properties:
+      errors:
+        items:
+          $ref: '#/definitions/dto.ErrorMsgResp'
+        type: array
+      statusCode:
+        default: 404
+        type: integer
+      success:
+        default: false
+        type: boolean
+    type: object
+  dto.FailedResp500:
+    properties:
+      errors:
+        items:
+          $ref: '#/definitions/dto.ErrorMsgResp'
+        type: array
+      statusCode:
+        default: 500
+        type: integer
+      success:
+        default: false
+        type: boolean
+    type: object
+  dto.SignInReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.SignInRes:
+    properties:
+      expToken:
+        type: integer
+      id:
+        type: string
+      name:
+        type: string
+      token:
+        type: string
+    type: object
+  dto.SignUpReq:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  dto.SignUpRes:
+    properties:
+      expToken:
+        type: integer
+      id:
+        type: string
+      name:
+        type: string
+      token:
+        type: string
+    type: object
+  dto.SuccessResp200:
+    properties:
+      data: {}
+      statusCode:
+        default: 200
+        type: integer
+      success:
+        default: true
+        type: boolean
+    type: object
+host: localhost:8000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API Spec for Book Service
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Book Service API
+  version: 1.0x
+paths:
+  /v1/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Sign In
+      operationId: signIn
+      parameters:
+      - description: Sign In Request
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignInReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.SuccessResp200'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SignInRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.FailedResp400'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.FailedResp401'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.FailedResp404'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.FailedResp500'
+      summary: Sign In
+      tags:
+      - auth
+  /v1/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Sign Up
+      operationId: signUp
+      parameters:
+      - description: Sign Up Request
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignUpReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.SuccessResp200'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SignUpRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.FailedResp400'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.FailedResp401'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.FailedResp404'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.FailedResp500'
+      summary: Sign Up
+      tags:
+      - auth
+schemes:
+- http
+- https
+securityDefinitions:
+  authorization:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
