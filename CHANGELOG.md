@@ -7,6 +7,13 @@
 
 * update version ([149a613](https://github.com/gadhittana01/book-g/commit/149a613462a5e3d73bdbdae38ea6adae3abec84b))
 
+# [1.1.0](https://github.com/gadhittana01/book-g/compare/v1.0.4...v1.1.0) (2024-12-13)
+
+
+### Features
+
+* update version ([149a613](https://github.com/gadhittana01/book-g/commit/149a613462a5e3d73bdbdae38ea6adae3abec84b))
+
 ## [1.0.4](https://github.com/gadhittana01/book-g/compare/v1.0.3...v1.0.4) (2024-12-13)
 
 
