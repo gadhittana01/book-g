@@ -23,3 +23,4 @@ go.work.sum
 **/tmp
 **/.DS_Store
 main
+**/.semantic_version.txt
