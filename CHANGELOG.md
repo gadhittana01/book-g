@@ -1,5 +1,12 @@
 # Semantic Versioning Changelog
 
+## [1.1.2](https://github.com/gadhittana01/book-g/compare/v1.1.1...v1.1.2) (2024-12-13)
+
+
+### Bug Fixes
+
+* update ([5f429bc](https://github.com/gadhittana01/book-g/commit/5f429bc05601624dc7117693b7c41e1cf313f3ac))
+
 ## [1.1.1](https://github.com/gadhittana01/book-g/compare/v1.1.0...v1.1.1) (2024-12-13)
 
 
