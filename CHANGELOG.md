@@ -27,6 +27,18 @@
 # [1.1.0](https://github.com/gadhittana01/book-g/compare/v1.0.4...v1.1.0) (2024-12-13)
 
 
+### Bug Fixes
+
+* add ([13bcd6a](https://github.com/gadhittana01/book-g/commit/13bcd6a5bfb6c6cff2e9107367684a71ec4e1970))
+
+
+### Features
+
+* update version ([149a613](https://github.com/gadhittana01/book-g/commit/149a613462a5e3d73bdbdae38ea6adae3abec84b))
+
+# [1.1.0](https://github.com/gadhittana01/book-g/compare/v1.0.4...v1.1.0) (2024-12-13)
+
+
 ### Features
 
 * update version ([149a613](https://github.com/gadhittana01/book-g/commit/149a613462a5e3d73bdbdae38ea6adae3abec84b))
